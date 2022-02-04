@@ -82,6 +82,7 @@ int main() {
     delete producer;
 
     log("Program finished executing.");
+    return 0;
 }
 
 void log(string message) {
