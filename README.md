@@ -1,2 +1,2 @@
 # ConfluentCloudTesting
-Testing the utilization of the librdkafka library.
+Testing the utilization of the librdkafka library with Confluent Cloud.
