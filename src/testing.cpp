@@ -94,8 +94,6 @@ int main() {
     // get configuration
     RdKafka::Conf* conf = getConfig();
 
-    // TODO: set delivery port callback?
-
     // create producer instance
     log("Creating producer instance.");
     RdKafka::Producer *producer = RdKafka::Producer::create(conf, errorString);
