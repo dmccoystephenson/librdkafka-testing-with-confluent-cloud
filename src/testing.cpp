@@ -8,13 +8,21 @@ void log(string message) {
     cout << "[LOG] " << message << endl;
 }
 
+const char* getEnvironmentVariable(const char* variableName) {
+    const char* toReturn = getenv(variableName);
+    if (!toReturn) {
+        cout << "[ERROR] Something went wrong attempting to retrieve the environment variable " << variableName << endl;
+    }
+    return toReturn;
+}
+
 int main() {
     log("Executing program.");
     
     // prepare variables
-    string brokers = ""; // SET
-    const char* username = ""; // SET
-    const char* password = ""; // SET
+    string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
+    const char* username = getEnvironmentVariable("CONFLUENT_KEY");
+    const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
 
     string topic = "topic.Asn1DecoderInput";
     string errorString = "";
