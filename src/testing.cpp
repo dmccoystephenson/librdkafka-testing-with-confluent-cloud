@@ -4,8 +4,12 @@
 
 using namespace std;
 
+void log(string message) {
+    cout << "[LOG] " << message << endl;
+}
+
 int main() {
-    cout << "Executing program." << endl;
+    log("Executing program.");
     
     // prepare variables
     string brokers = "pkc-43n10.us-central1.gcp.confluent.cloud:9092";
@@ -13,38 +17,45 @@ int main() {
     const char* username = ""; // SET
     const char* password = ""; // SET
     string errorString = "";
+    string confType = "hardcode"; // hardcode or file
 
     // create configuration
-    cout << "Creating configuration" << endl;
-    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    RdKafka::Conf *conf =RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    cout << "confType: " << confType << endl;
+    if (confType == "hardcode") {
+        log("Creating configuration manually.");
 
-    // set up confluent cloud config
-    cout << "Setting up Confluent Cloud configuration key/value pairs." << endl;
-    conf->set("bootstrap.servers", brokers, errorString);
-    conf->set("ssl.endpoint.identification.algorithm", "https", errorString);
-    conf->set("security.protocol", "SASL_SSL", errorString); // SSL_SASL or SSL_PLAINTEXT
-    conf->set("sasl.mechanisms", "PLAIN", errorString);
-    conf->set("sasl.username", username, errorString);
-    conf->set("sasl.password", password, errorString);
+        // set up confluent cloud config
+        log("Setting up Confluent Cloud configuration key/value pairs.");
 
-    conf->set("api.version.request", "true", errorString);
+        conf->set("bootstrap.servers", brokers, errorString);
+        conf->set("ssl.endpoint.identification.algorithm", "https", errorString);
+        conf->set("security.protocol", "SASL_SSL", errorString); // SSL_SASL or SSL_PLAINTEXT
+        conf->set("sasl.mechanisms", "PLAIN", errorString);
+        conf->set("sasl.username", username, errorString);
+        conf->set("sasl.password", password, errorString);
 
-    cout << "Finished setting up Confluent Cloud configuration key/value pairs." << endl;
+        log("Finished setting up Confluent Cloud configuration key/value pairs.");
+    }
+    else if (confType == "file") {
+        log("Loading configuration in from file.");
+        // TODO: load config in from file
+    }
 
     // TODO: set delivery port callback?
 
     // create producer instance
-    cout << "Creating producer instance." << endl;
+    log("Creating producer instance.");
     RdKafka::Producer *producer = RdKafka::Producer::create(conf, errorString);
 
     // delete config
-    cout << "Deleting configuration." << endl;
+    log("Deleting configuration.");
     delete conf;
 
     string message = "test";
 
     // produce
-    cout << "Producing." << endl;
+    log("Producing to topic.");
     RdKafka::ErrorCode errorCode = producer->produce(
                         /* Topic name */
                         topic,
@@ -65,20 +76,20 @@ int main() {
         
     // error checking
     if (errorCode != RdKafka::ERR_NO_ERROR) {
-        cout << "Failed to produce to topic " << topic << "." << endl;
+        cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
     }
     else {
-        cout << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
+        cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
     }
     
     // flush
-    cout << "Flushing final messages..." << endl;
+    log("Flushing final messages...");
     producer->flush(10*1000);
 
     // delete producer
-    cout << "Deleting producer." << endl;
+    log("Deleting producer.");
     delete producer;
 
-    cout << "Program finished executing." << endl;
+    log("Program finished executing.");
     return 0;
 }
