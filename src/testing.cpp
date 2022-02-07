@@ -12,10 +12,11 @@ int main() {
     log("Executing program.");
     
     // prepare variables
-    string brokers = "pkc-43n10.us-central1.gcp.confluent.cloud:9092";
-    string topic = "topic.Asn1DecoderInput";
+    string brokers = ""; // SET
     const char* username = ""; // SET
     const char* password = ""; // SET
+
+    string topic = "topic.Asn1DecoderInput";
     string errorString = "";
     string confType = "hardcode"; // hardcode or file
 
