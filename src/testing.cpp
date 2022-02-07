@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "librdkafka/rdkafkacpp.h"
 
 using namespace std;
@@ -16,52 +17,93 @@ const char* getEnvironmentVariable(const char* variableName) {
     return toReturn;
 }
 
-int main() {
-    log("Executing program.");
-    
-    // prepare variables
-    string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
-    const char* username = getEnvironmentVariable("CONFLUENT_KEY");
-    const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
+void printErrorStringIfNotEmpty(string errorString) {
+    if (errorString != "") {
+        cout << "[ERROR] " << errorString << endl;
+    }
+}
 
-    string topic = "topic.Asn1DecoderInput";
-    string errorString = "";
-    string confType = "hardcode"; // hardcode or file
-
-    // create configuration
-    RdKafka::Conf *conf =RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+RdKafka::Conf* getConfig() {
+    string confType = "file"; // hardcode or file
     cout << "confType: " << confType << endl;
-    if (confType == "hardcode") {
+
+    string errorString = "";
+
+    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+
+    if (confType == "file") {
+        log("Loading configuration in from file.");
+        
+        ifstream configFile ("cc.config");
+        if (configFile.is_open()) {
+            string line;
+            while (getline(configFile, line)) {
+                if (line[0] == '#') {
+                    continue;
+                }
+
+                auto indexOfEqualsSign = line.find("=");
+                auto key = line.substr(0, indexOfEqualsSign);
+                auto value = line.substr(indexOfEqualsSign + 1);
+
+                conf->set(key, value, errorString);
+                printErrorStringIfNotEmpty(errorString);
+            }
+        }
+        else {
+            cout << "[ERROR] Couldn't open config file." << endl;
+        }
+    }
+    else if (confType == "hardcode") {
         log("Creating configuration manually.");
 
-        // set up confluent cloud config
+        string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
+        const char* username = getEnvironmentVariable("CONFLUENT_KEY");
+        const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
+
         log("Setting up Confluent Cloud configuration key/value pairs.");
 
         conf->set("bootstrap.servers", brokers, errorString);
-        conf->set("ssl.endpoint.identification.algorithm", "https", errorString);
-        conf->set("security.protocol", "SASL_SSL", errorString); // SSL_SASL or SSL_PLAINTEXT
+        printErrorStringIfNotEmpty(errorString);
+
+        conf->set("security.protocol", "SASL_SSL", errorString); // SASL_SSL or SSL_PLAINTEXT
+        printErrorStringIfNotEmpty(errorString);
+
         conf->set("sasl.mechanisms", "PLAIN", errorString);
+        printErrorStringIfNotEmpty(errorString);
+
         conf->set("sasl.username", username, errorString);
+        printErrorStringIfNotEmpty(errorString);
+
         conf->set("sasl.password", password, errorString);
+        printErrorStringIfNotEmpty(errorString);
 
         log("Finished setting up Confluent Cloud configuration key/value pairs.");
     }
-    else if (confType == "file") {
-        log("Loading configuration in from file.");
-        // TODO: load config in from file
-    }
+    return conf;
+}
+
+int main() {
+    log("Executing program.");
+
+    string topic = "topic.Asn1DecoderInput";
+    string message = "test";
+    
+    string errorString = "";
+
+    // get configuration
+    RdKafka::Conf* conf = getConfig();
 
     // TODO: set delivery port callback?
 
     // create producer instance
     log("Creating producer instance.");
     RdKafka::Producer *producer = RdKafka::Producer::create(conf, errorString);
+    printErrorStringIfNotEmpty(errorString);
 
     // delete config
     log("Deleting configuration.");
     delete conf;
-
-    string message = "test";
 
     // produce
     log("Producing to topic.");
