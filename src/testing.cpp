@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-#include "../librdkafka/src-cpp/rdkafkacpp.h"
+#include "librdkafka/rdkafkacpp.h"
 
 using namespace std;
 
@@ -10,23 +10,24 @@ int main() {
     // prepare variables
     string brokers = "pkc-43n10.us-central1.gcp.confluent.cloud:9092";
     string topic = "topic.Asn1DecoderInput";
-    string username = getenv("CONFLUENT_KEY");
-    string password = getenv("CONFLUENT_SECRET");
+    const char* username = ""; // SET
+    const char* password = ""; // SET
     string errorString = "";
 
-    // configuration
+    // create configuration
     cout << "Creating configuration" << endl;
     RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
 
-    conf->set("bootstrap.servers", brokers, errorString);
-
+    // set up confluent cloud config
     cout << "Setting up Confluent Cloud configuration key/value pairs." << endl;
-
-    conf->set("security.protocol", "SASL_SSL", errorString);
+    conf->set("bootstrap.servers", brokers, errorString);
+    conf->set("ssl.endpoint.identification.algorithm", "https", errorString);
+    conf->set("security.protocol", "SASL_SSL", errorString); // SSL_SASL or SSL_PLAINTEXT
     conf->set("sasl.mechanisms", "PLAIN", errorString);
-    conf->set("sasl.username", username.c_str(), errorString);
-    conf->set("sasl.password", password.c_str(), errorString);
-    conf->set("session.timeout.ms", "45000", errorString);
+    conf->set("sasl.username", username, errorString);
+    conf->set("sasl.password", password, errorString);
+
+    conf->set("api.version.request", "true", errorString);
 
     cout << "Finished setting up Confluent Cloud configuration key/value pairs." << endl;
 
@@ -71,7 +72,7 @@ int main() {
     }
     
     // flush
-    cout << "Flushing final messages..." << std::endl;
+    cout << "Flushing final messages..." << endl;
     producer->flush(10*1000);
 
     // delete producer
