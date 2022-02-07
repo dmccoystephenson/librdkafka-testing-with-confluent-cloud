@@ -17,9 +17,10 @@ const char* getEnvironmentVariable(const char* variableName) {
     return toReturn;
 }
 
-void printErrorStringIfNotEmpty(string errorString) {
-    if (errorString != "") {
-        cout << "[ERROR] " << errorString << endl;
+void printErrorStringIfNotEmpty(string* errorString) {
+    if (*errorString != "") {
+        cout << "[ERROR] " << *errorString << endl;
+        *errorString = "";
     }
 }
 
@@ -46,7 +47,7 @@ RdKafka::Conf* getConfig() {
                 auto value = line.substr(indexOfEqualsSign + 1);
 
                 conf->set(key, value, errorString);
-                printErrorStringIfNotEmpty(errorString);
+                printErrorStringIfNotEmpty(&errorString);
             }
         }
         else {
@@ -63,19 +64,19 @@ RdKafka::Conf* getConfig() {
         log("Setting up Confluent Cloud configuration key/value pairs.");
 
         conf->set("bootstrap.servers", brokers, errorString);
-        printErrorStringIfNotEmpty(errorString);
+        printErrorStringIfNotEmpty(&errorString);
 
         conf->set("security.protocol", "SASL_SSL", errorString); // SASL_SSL or SSL_PLAINTEXT
-        printErrorStringIfNotEmpty(errorString);
+        printErrorStringIfNotEmpty(&errorString);
 
         conf->set("sasl.mechanisms", "PLAIN", errorString);
-        printErrorStringIfNotEmpty(errorString);
+        printErrorStringIfNotEmpty(&errorString);
 
         conf->set("sasl.username", username, errorString);
-        printErrorStringIfNotEmpty(errorString);
+        printErrorStringIfNotEmpty(&errorString);
 
         conf->set("sasl.password", password, errorString);
-        printErrorStringIfNotEmpty(errorString);
+        printErrorStringIfNotEmpty(&errorString);
 
         log("Finished setting up Confluent Cloud configuration key/value pairs.");
     }
@@ -92,7 +93,7 @@ int main() {
     log("Creating producer instance.");
     string errorString = "";
     RdKafka::Producer *producer = RdKafka::Producer::create(conf, errorString);
-    printErrorStringIfNotEmpty(errorString);
+    printErrorStringIfNotEmpty(&errorString);
 
     // delete config
     log("Deleting configuration.");
