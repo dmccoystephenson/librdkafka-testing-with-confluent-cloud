@@ -25,7 +25,6 @@ void printErrorStringIfNotEmpty(string errorString) {
 
 RdKafka::Conf* getConfig() {
     string confType = "file"; // hardcode or file
-    cout << "confType: " << confType << endl;
 
     string errorString = "";
 
