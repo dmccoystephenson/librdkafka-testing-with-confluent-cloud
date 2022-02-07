@@ -35,23 +35,23 @@ RdKafka::Conf* getConfig() {
         log("Loading configuration in from file.");
         
         ifstream configFile ("cc.config");
-        if (configFile.is_open()) {
-            string line;
-            while (getline(configFile, line)) {
-                if (line[0] == '#') {
-                    continue;
-                }
-
-                auto indexOfEqualsSign = line.find("=");
-                auto key = line.substr(0, indexOfEqualsSign);
-                auto value = line.substr(indexOfEqualsSign + 1);
-
-                conf->set(key, value, errorString);
-                printErrorStringIfNotEmpty(&errorString);
-            }
-        }
-        else {
+        
+        if (!configFile.is_open()) {
             cout << "[ERROR] Couldn't open config file." << endl;
+        }
+
+        string line;
+        while (getline(configFile, line)) {
+            if (line[0] == '#') {
+                continue;
+            }
+
+            auto indexOfEqualsSign = line.find("=");
+            auto key = line.substr(0, indexOfEqualsSign);
+            auto value = line.substr(indexOfEqualsSign + 1);
+
+            conf->set(key, value, errorString);
+            printErrorStringIfNotEmpty(&errorString);
         }
     }
     else if (confType == "hardcode") {
