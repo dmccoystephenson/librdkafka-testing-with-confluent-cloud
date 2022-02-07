@@ -86,16 +86,12 @@ RdKafka::Conf* getConfig() {
 int main() {
     log("Executing program.");
 
-    string topic = "topic.Asn1DecoderInput";
-    string message = "test";
-    
-    string errorString = "";
-
     // get configuration
     RdKafka::Conf* conf = getConfig();
 
     // create producer instance
     log("Creating producer instance.");
+    string errorString = "";
     RdKafka::Producer *producer = RdKafka::Producer::create(conf, errorString);
     printErrorStringIfNotEmpty(errorString);
 
@@ -105,6 +101,8 @@ int main() {
 
     // produce
     log("Producing to topic.");
+    string topic = "topic.Asn1DecoderInput";
+    string message = "test";
     RdKafka::ErrorCode errorCode = producer->produce(
                         /* Topic name */
                         topic,
