@@ -100,8 +100,8 @@ int main() {
 
     // produce
     log("Producing to topic.");
-    string topic = "topic.Asn1DecoderInput";
-    string message = "test";
+    string topic = getEnvironmentVariable("TOPIC");
+    string message = getEnvironmentVariable("MESSAGE");
     RdKafka::ErrorCode errorCode = producer->produce(
                         /* Topic name */
                         topic,

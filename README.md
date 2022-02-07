@@ -5,4 +5,5 @@ Testing the utilization of the librdkafka library with Confluent Cloud.
 - CONFLUENT_BROKERS
 - CONFLUENT_KEY
 - CONFLUENT_SECRET
+- TOPIC
 - MESSAGE
