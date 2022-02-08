@@ -25,59 +25,59 @@ void printErrorStringIfNotEmpty(string* errorString) {
 }
 
 void loadConfigFromFile(RdKafka::Conf* conf) {
-        log("Loading configuration in from file.");
-        
-        ifstream configFile ("cc.config");
-        
-        if (!configFile.is_open()) {
-            cout << "[ERROR] Couldn't open config file." << endl;
+    log("Loading configuration in from file.");
+    
+    ifstream configFile ("cc.config");
+    
+    if (!configFile.is_open()) {
+        cout << "[ERROR] Couldn't open config file." << endl;
+    }
+
+    string errorString = "";
+
+    string line;
+    while (getline(configFile, line)) {
+        if (line[0] == '#') {
+            continue;
         }
 
-        string errorString = "";
+        auto indexOfEqualsSign = line.find("=");
+        auto key = line.substr(0, indexOfEqualsSign);
+        auto value = line.substr(indexOfEqualsSign + 1);
 
-        string line;
-        while (getline(configFile, line)) {
-            if (line[0] == '#') {
-                continue;
-            }
-
-            auto indexOfEqualsSign = line.find("=");
-            auto key = line.substr(0, indexOfEqualsSign);
-            auto value = line.substr(indexOfEqualsSign + 1);
-
-            conf->set(key, value, errorString);
-            printErrorStringIfNotEmpty(&errorString);
-        }
-        log("Finished loading configuration in from file.");
+        conf->set(key, value, errorString);
+        printErrorStringIfNotEmpty(&errorString);
+    }
+    log("Finished loading configuration in from file.");
 }
 
 void setConfigManually(RdKafka::Conf* conf) {
-        log("Creating configuration manually.");
+    log("Creating configuration manually.");
 
-        string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
-        const char* username = getEnvironmentVariable("CONFLUENT_KEY");
-        const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
+    string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
+    const char* username = getEnvironmentVariable("CONFLUENT_KEY");
+    const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
 
-        log("Setting up Confluent Cloud configuration key/value pairs.");
+    log("Setting up Confluent Cloud configuration key/value pairs.");
 
-        string errorString = "";
+    string errorString = "";
 
-        conf->set("bootstrap.servers", brokers, errorString);
-        printErrorStringIfNotEmpty(&errorString);
+    conf->set("bootstrap.servers", brokers, errorString);
+    printErrorStringIfNotEmpty(&errorString);
 
-        conf->set("security.protocol", "SASL_SSL", errorString); // SASL_SSL or SSL_PLAINTEXT
-        printErrorStringIfNotEmpty(&errorString);
+    conf->set("security.protocol", "SASL_SSL", errorString); // SASL_SSL or SSL_PLAINTEXT
+    printErrorStringIfNotEmpty(&errorString);
 
-        conf->set("sasl.mechanisms", "PLAIN", errorString);
-        printErrorStringIfNotEmpty(&errorString);
+    conf->set("sasl.mechanisms", "PLAIN", errorString);
+    printErrorStringIfNotEmpty(&errorString);
 
-        conf->set("sasl.username", username, errorString);
-        printErrorStringIfNotEmpty(&errorString);
+    conf->set("sasl.username", username, errorString);
+    printErrorStringIfNotEmpty(&errorString);
 
-        conf->set("sasl.password", password, errorString);
-        printErrorStringIfNotEmpty(&errorString);
+    conf->set("sasl.password", password, errorString);
+    printErrorStringIfNotEmpty(&errorString);
 
-        log("Finished setting up Confluent Cloud configuration key/value pairs.");
+    log("Finished setting up Confluent Cloud configuration key/value pairs.");
 }
 
 RdKafka::Conf* getConfig() {
