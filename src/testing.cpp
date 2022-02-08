@@ -24,14 +24,7 @@ void printErrorStringIfNotEmpty(string* errorString) {
     }
 }
 
-RdKafka::Conf* getConfig() {
-    string confType = "file"; // hardcode or file
-
-    string errorString = "";
-
-    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-
-    if (confType == "file") {
+void loadConfigFromFile(RdKafka::Conf* conf) {
         log("Loading configuration in from file.");
         
         ifstream configFile ("cc.config");
@@ -39,6 +32,8 @@ RdKafka::Conf* getConfig() {
         if (!configFile.is_open()) {
             cout << "[ERROR] Couldn't open config file." << endl;
         }
+
+        string errorString = "";
 
         string line;
         while (getline(configFile, line)) {
@@ -53,8 +48,10 @@ RdKafka::Conf* getConfig() {
             conf->set(key, value, errorString);
             printErrorStringIfNotEmpty(&errorString);
         }
-    }
-    else if (confType == "hardcode") {
+        log("Finished loading configuration in from file.");
+}
+
+void setConfigManually(RdKafka::Conf* conf) {
         log("Creating configuration manually.");
 
         string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
@@ -62,6 +59,8 @@ RdKafka::Conf* getConfig() {
         const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
 
         log("Setting up Confluent Cloud configuration key/value pairs.");
+
+        string errorString = "";
 
         conf->set("bootstrap.servers", brokers, errorString);
         printErrorStringIfNotEmpty(&errorString);
@@ -79,7 +78,23 @@ RdKafka::Conf* getConfig() {
         printErrorStringIfNotEmpty(&errorString);
 
         log("Finished setting up Confluent Cloud configuration key/value pairs.");
+}
+
+RdKafka::Conf* getConfig() {
+    string confType = "file"; // hardcode or file
+
+    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+
+    if (confType == "file") {
+        loadConfigFromFile(conf);
     }
+    else if (confType == "hardcode") {
+        setConfigManually(conf);
+    }
+    else {
+        cout << "[ERROR] Config type " << confType << " was not recognized." << endl;
+    }
+
     return conf;
 }
 
