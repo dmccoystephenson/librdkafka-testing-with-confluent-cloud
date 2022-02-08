@@ -48,7 +48,6 @@ void loadConfigFromFile(RdKafka::Conf* conf) {
         conf->set(key, value, errorString);
         printErrorStringIfNotEmpty(&errorString);
     }
-    log("Finished loading configuration in from file.");
 }
 
 void setConfigManually(RdKafka::Conf* conf) {
