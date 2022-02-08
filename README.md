@@ -10,7 +10,7 @@ Install SASL via the command line. The librdkafka library will use this during c
 3) Type cmake .
 4) Type make
 5) Return to the project directory
-6) Set required environment variables and alter the config file if necessary
+6) Set required environment variables and alter the config file if you are loading the config in from a file.
 7) Type make
 
 ## Environment Variables
