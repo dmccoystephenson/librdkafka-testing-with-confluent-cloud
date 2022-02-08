@@ -13,13 +13,14 @@ Install SASL via the command line. The librdkafka library will use this during c
 6) Return to the project directory
 7) Type make
 
-## Required Environment Variables If Hard Coding Configuration
-- CONFLUENT_BROKERS
-- CONFLUENT_KEY
-- CONFLUENT_SECRET
+## Environment Variables
+### Required Environment Variables If Loading Config From File
 - TOPIC
 - MESSAGE
 
-## Required Environment Variables If Loading Config From File
+### Required Environment Variables If Hard Coding Configuration
+- CONFLUENT_BROKERS
+- CONFLUENT_KEY
+- CONFLUENT_SECRET
 - TOPIC
 - MESSAGE
