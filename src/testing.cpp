@@ -144,7 +144,7 @@ int main() {
     }
     
     // flush
-    log("Flushing final messages...");
+    log("Flushing...");
     producer->flush(10*1000);
 
     // delete producer
