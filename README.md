@@ -33,3 +33,6 @@ Install SASL via the command line. The librdkafka library will use this during c
 - sasl.username
 - sasl.password
 - debug
+- api.version.request
+- api.version.fallback
+- broker.version.fallback
