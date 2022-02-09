@@ -25,3 +25,11 @@ Install SASL via the command line. The librdkafka library will use this during c
 - CONFLUENT_SECRET
 - TOPIC
 - MESSAGE
+
+## cc.config possible options
+- bootstrap.servers
+- security.protocol
+- sasl.mechanisms
+- sasl.username
+- sasl.password
+- debug
