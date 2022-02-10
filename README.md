@@ -11,7 +11,7 @@ Testing the utilization of the librdkafka library with Confluent Cloud.
 7) Execute the project by typing ./testing
 
 ## Environment Variables
-### Required Environment Variables If Loading Config From File
+### Required Environment Variables
 - TOPIC
 - MESSAGE
 
