@@ -20,6 +20,3 @@ WORKDIR /librdkafka-testing-with-confluent-cloud
 
 # compile the project
 RUN make
-
-# execute the program
-RUN ./testing
