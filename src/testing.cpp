@@ -92,7 +92,7 @@ int main() {
     log("Executing program.");
 
     // get configuration
-    RdKafka::Conf* conf = loadConfigFromEnvironmentVariables();
+    RdKafka::Conf* conf = loadConfigFromFile();
     // RdKafka::Conf* conf = loadConfigFromFile();
 
     // create producer instance
