@@ -12,7 +12,7 @@ void log(string message) {
 const char* getEnvironmentVariable(const char* variableName) {
     const char* toReturn = getenv(variableName);
     if (!toReturn) {
-        cout << "[ERROR] Something went wrong attempting to retrieve the environment variable " << variableName << endl;
+        cout << "[ERROR] Something went wrong attempting to retrieve the environment variable " << variableName << ". Exiting." << endl;
         exit(1);
     }
     return toReturn;
