@@ -79,7 +79,7 @@ RdKafka::Conf* loadConfigFromEnvironmentVariables() {
     conf->set("api.version.request", getEnvironmentVariable("API_VERSION_REQUEST"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("api.version.fallback.ms", getEnvironmentVariable("API_VERSION_FALLBACK_MS"), errorString);
+    conf->set("api.version.fallback.ms", "0", errorString);
     printErrorStringIfNotEmpty(&errorString);
 
     conf->set("broker.version.fallback", getEnvironmentVariable("BROKER_VERSION_FALLBACK"), errorString);
