@@ -61,7 +61,7 @@ RdKafka::Conf* loadConfigFromEnvironmentVariables() {
 
     string errorString = "";
 
-    conf->set("bootstrap.servers", getEnvironmentVariable("BOOSTRAP_SERVERS"), errorString);
+    conf->set("bootstrap.servers", getEnvironmentVariable("BOOTSTRAP_SERVERS"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
     conf->set("security.protocol", getEnvironmentVariable("SECURITY_PROTOCOL"), errorString);
