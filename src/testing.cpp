@@ -108,8 +108,8 @@ int main() {
     for (int i = 0; i < 100; i++) {
         // produce
         log("Producing to topic.");
-        string topic = getEnvironmentVariable("TOPIC");
-        string message = getEnvironmentVariable("MESSAGE");
+        string topic = "test";
+        string message = "testmessage";
         RdKafka::ErrorCode errorCode = producer->produce(
                             /* Topic name */
                             topic,
