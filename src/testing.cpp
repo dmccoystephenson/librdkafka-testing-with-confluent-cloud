@@ -83,7 +83,6 @@ int main() {
 
     // get configuration
     RdKafka::Conf* conf = loadConfigFromFile();
-    // RdKafka::Conf* conf = loadConfigFromFile();
 
     // create producer instance
     log("Creating producer instance.");
