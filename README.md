@@ -4,15 +4,14 @@ Testing the utilization of the librdkafka library with Confluent Cloud.
 ## SASL
 Install SASL via the command line. The librdkafka library will use this during compilation.
 
-## Steps to Compile
-1) Type git submodule update --init --recursive
-2) Enter the "librdkafka" directory
-3) Type cmake .
-4) Type make
-5) Return to the project directory
-6) Set required environment variables.
-7) If you are loading the config in from a file, edit the "cc.config" file to include the brokers, key and secret for Confluent Cloud integration.
-8) Type make
+## Steps to Test
+1) Build the docker image
+2) Run the docker image
+3) Exec into the docker image
+4) Alter the cc.config file to include the brokers, key and secret for Confluent Cloud integration
+5) Set the TOPIC and MESSAGE environment variables
+6) Compile the project by typing make
+7) Execute the project by typing ./testing
 
 ## Environment Variables
 ### Required Environment Variables If Loading Config From File
