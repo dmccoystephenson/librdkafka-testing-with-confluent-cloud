@@ -10,6 +10,7 @@ RUN apt-get install -y g++
 RUN apt-get install -y libsasl2-dev
 RUN apt-get install -y libsasl2-modules
 RUN apt-get install -y libssl-dev
+RUN apt-get install -y librdkafka-dev
 
 # clone project
 RUN git clone https://github.com/dmccoystephenson/librdkafka-testing-with-confluent-cloud
@@ -17,14 +18,7 @@ RUN git clone https://github.com/dmccoystephenson/librdkafka-testing-with-conflu
 # change directory
 WORKDIR /librdkafka-testing-with-confluent-cloud
 
-# update submodules
-RUN git submodule update --recursive --init
-RUN git pull --recurse-submodules
-
-# change directory
-WORKDIR /librdkafka-testing-with-confluent-cloud/librdkafka
-
-# compile librdkafa
-RUN cmake .
-RUN ./configure
+# compile the project
 RUN make
+
+# Note: config and environment variables need to be set before running the project
