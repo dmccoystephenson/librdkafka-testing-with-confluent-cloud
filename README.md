@@ -1,9 +1,6 @@
 # librdkafka testing with confluent cloud
 Testing the utilization of the librdkafka library with Confluent Cloud.
 
-## SASL
-Install SASL via the command line. The librdkafka library will use this during compilation.
-
 ## Steps to Test
 1) Build the docker image
 2) Run the docker image
