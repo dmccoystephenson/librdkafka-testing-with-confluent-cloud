@@ -24,8 +24,10 @@ void printErrorStringIfNotEmpty(string* errorString) {
     }
 }
 
-void loadConfigFromFile(RdKafka::Conf* conf) {
+RdKafka::Conf* loadConfigFromFile() {
     log("Loading configuration in from file.");
+
+    RdKafka::Conf* conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     
     ifstream configFile ("cc.config");
     
@@ -48,60 +50,15 @@ void loadConfigFromFile(RdKafka::Conf* conf) {
         conf->set(key, value, errorString);
         printErrorStringIfNotEmpty(&errorString);
     }
-}
-
-void setConfigManually(RdKafka::Conf* conf) {
-    log("Creating configuration manually.");
-
-    string brokers = getEnvironmentVariable("CONFLUENT_BROKERS");
-    const char* username = getEnvironmentVariable("CONFLUENT_KEY");
-    const char* password = getEnvironmentVariable("CONFLUENT_SECRET");
-
-    log("Setting up Confluent Cloud configuration key/value pairs.");
-
-    string errorString = "";
-
-    conf->set("bootstrap.servers", brokers, errorString);
-    printErrorStringIfNotEmpty(&errorString);
-
-    conf->set("security.protocol", "SASL_SSL", errorString); // SASL_SSL or SSL_PLAINTEXT
-    printErrorStringIfNotEmpty(&errorString);
-
-    conf->set("sasl.mechanisms", "PLAIN", errorString);
-    printErrorStringIfNotEmpty(&errorString);
-
-    conf->set("sasl.username", username, errorString);
-    printErrorStringIfNotEmpty(&errorString);
-
-    conf->set("sasl.password", password, errorString);
-    printErrorStringIfNotEmpty(&errorString);
-
-    log("Finished setting up Confluent Cloud configuration key/value pairs.");
-}
-
-RdKafka::Conf* getConfig() {
-    string confType = "file"; // hardcode or file
-
-    RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-
-    if (confType == "file") {
-        loadConfigFromFile(conf);
-    }
-    else if (confType == "hardcode") {
-        setConfigManually(conf);
-    }
-    else {
-        cout << "[ERROR] Config type " << confType << " was not recognized." << endl;
-    }
 
     return conf;
 }
 
 int main() {
-    log("Executing program.");
+    log("Executing program.");d
 
     // get configuration
-    RdKafka::Conf* conf = getConfig();
+    RdKafka::Conf* conf = loadConfigFromFile();
 
     // create producer instance
     log("Creating producer instance.");
