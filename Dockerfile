@@ -21,4 +21,5 @@ WORKDIR /librdkafka-testing-with-confluent-cloud
 # compile the project
 RUN make
 
-# Note: config and environment variables need to be set before running the project
+# execute the program
+RUN ./testing
