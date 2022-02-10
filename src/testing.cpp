@@ -13,6 +13,7 @@ const char* getEnvironmentVariable(const char* variableName) {
     const char* toReturn = getenv(variableName);
     if (!toReturn) {
         cout << "[ERROR] Something went wrong attempting to retrieve the environment variable " << variableName << endl;
+        exit(1);
     }
     return toReturn;
 }
