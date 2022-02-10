@@ -55,7 +55,7 @@ RdKafka::Conf* loadConfigFromFile() {
 }
 
 int main() {
-    log("Executing program.");d
+    log("Executing program.");
 
     // get configuration
     RdKafka::Conf* conf = loadConfigFromFile();
