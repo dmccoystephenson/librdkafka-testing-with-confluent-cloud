@@ -105,41 +105,39 @@ int main() {
     log("Deleting configuration.");
     delete conf;
 
-    for (int i = 0; i < 100; i++) {
-        // produce
-        log("Producing to topic.");
-        string topic = "test";
-        string message = "testmessage";
-        RdKafka::ErrorCode errorCode = producer->produce(
-                            /* Topic name */
-                            topic,
-                            /* Any Partition */
-                            RdKafka::Topic::PARTITION_UA,
-                            /* Make a copy of the value */
-                            RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
-                            /* Value */
-                            const_cast<char*>(message.c_str()), message.size(),
-                            /* Key */
-                            NULL, 0,
-                            /* Timestamp (defaults to current time) */
-                            0,
-                            /* Message headers, if any */
-                            NULL,
-                            /* Per-message opaque value passed to delivery report */
-                            NULL);
-            
-        // error checking
-        if (errorCode != RdKafka::ERR_NO_ERROR) {
-            cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
-        }
-        else {
-            cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
-        }
+    // produce
+    log("Producing to topic.");
+    string topic = "test";
+    string message = "testmessage";
+    RdKafka::ErrorCode errorCode = producer->produce(
+                        /* Topic name */
+                        topic,
+                        /* Any Partition */
+                        RdKafka::Topic::PARTITION_UA,
+                        /* Make a copy of the value */
+                        RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
+                        /* Value */
+                        const_cast<char*>(message.c_str()), message.size(),
+                        /* Key */
+                        NULL, 0,
+                        /* Timestamp (defaults to current time) */
+                        0,
+                        /* Message headers, if any */
+                        NULL,
+                        /* Per-message opaque value passed to delivery report */
+                        NULL);
         
-        // flush
-        log("Flushing...");
-        producer->flush(10*1000);
+    // error checking
+    if (errorCode != RdKafka::ERR_NO_ERROR) {
+        cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
     }
+    else {
+        cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
+    }
+    
+    // flush
+    log("Flushing...");
+    producer->flush(10*1000);
 
     // delete producer
     log("Deleting producer.");
