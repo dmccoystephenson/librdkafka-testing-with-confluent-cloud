@@ -61,28 +61,28 @@ RdKafka::Conf* loadConfigFromEnvironmentVariables() {
 
     string errorString = "";
 
-    conf->set("bootstrap.servers", getEnvironmentVariable("BOOSTRAP.SERVERS"), errorString);
+    conf->set("bootstrap.servers", getEnvironmentVariable("BOOSTRAP_SERVERS"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("security.protocol", getEnvironmentVariable("SECURITY.PROTOCOL"), errorString);
+    conf->set("security.protocol", getEnvironmentVariable("SECURITY_PROTOCOL"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("sasl.mechanisms", getEnvironmentVariable("SASL.MECHANISMS"), errorString);
+    conf->set("sasl.mechanisms", getEnvironmentVariable("SASL_MECHANISMS"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("sasl.username", getEnvironmentVariable("SASL.USERNAME"), errorString);
+    conf->set("sasl.username", getEnvironmentVariable("SASL_USERNAME"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
     conf->set("debug", getEnvironmentVariable("DEBUG"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("api.version.request", getEnvironmentVariable("API.VERSION.REQUEST"), errorString);
+    conf->set("api.version.request", getEnvironmentVariable("API_VERSION_REQUEST"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("api.version.fallback.ms", getEnvironmentVariable("API.VERSION.FALLBACK.MS    "), errorString);
+    conf->set("api.version.fallback.ms", getEnvironmentVariable("API_VERSION_FALLBACK_MS    "), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
-    conf->set("broker.version.fallback", getEnvironmentVariable("BROKER.VERSION.FALLBACK"), errorString);
+    conf->set("broker.version.fallback", getEnvironmentVariable("BROKER_VERSION_FALLBACK"), errorString);
     printErrorStringIfNotEmpty(&errorString);
 
     return conf;
@@ -105,39 +105,41 @@ int main() {
     log("Deleting configuration.");
     delete conf;
 
-    // produce
-    log("Producing to topic.");
-    string topic = getEnvironmentVariable("TOPIC");
-    string message = getEnvironmentVariable("MESSAGE");
-    RdKafka::ErrorCode errorCode = producer->produce(
-                        /* Topic name */
-                        topic,
-                        /* Any Partition */
-                        RdKafka::Topic::PARTITION_UA,
-                        /* Make a copy of the value */
-                        RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
-                        /* Value */
-                        const_cast<char*>(message.c_str()), message.size(),
-                        /* Key */
-                        NULL, 0,
-                        /* Timestamp (defaults to current time) */
-                        0,
-                        /* Message headers, if any */
-                        NULL,
-                        /* Per-message opaque value passed to delivery report */
-                        NULL);
+    for (int i = 0; i < 100; i++) {
+        // produce
+        log("Producing to topic.");
+        string topic = getEnvironmentVariable("TOPIC");
+        string message = getEnvironmentVariable("MESSAGE");
+        RdKafka::ErrorCode errorCode = producer->produce(
+                            /* Topic name */
+                            topic,
+                            /* Any Partition */
+                            RdKafka::Topic::PARTITION_UA,
+                            /* Make a copy of the value */
+                            RdKafka::Producer::RK_MSG_COPY /* Copy payload */,
+                            /* Value */
+                            const_cast<char*>(message.c_str()), message.size(),
+                            /* Key */
+                            NULL, 0,
+                            /* Timestamp (defaults to current time) */
+                            0,
+                            /* Message headers, if any */
+                            NULL,
+                            /* Per-message opaque value passed to delivery report */
+                            NULL);
+            
+        // error checking
+        if (errorCode != RdKafka::ERR_NO_ERROR) {
+            cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
+        }
+        else {
+            cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
+        }
         
-    // error checking
-    if (errorCode != RdKafka::ERR_NO_ERROR) {
-        cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
+        // flush
+        log("Flushing...");
+        producer->flush(10*1000);
     }
-    else {
-        cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
-    }
-    
-    // flush
-    log("Flushing...");
-    producer->flush(10*1000);
 
     // delete producer
     log("Deleting producer.");
