@@ -18,13 +18,6 @@ Install SASL via the command line. The librdkafka library will use this during c
 - TOPIC
 - MESSAGE
 
-### Required Environment Variables If Hard Coding Configuration
-- CONFLUENT_BROKERS
-- CONFLUENT_KEY
-- CONFLUENT_SECRET
-- TOPIC
-- MESSAGE
-
 ## cc.config possible options
 - bootstrap.servers
 - security.protocol
