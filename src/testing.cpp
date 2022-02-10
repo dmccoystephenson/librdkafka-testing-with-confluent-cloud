@@ -54,37 +54,27 @@ RdKafka::Conf* loadConfigFromFile() {
     return conf;
 }
 
+// unused
 RdKafka::Conf* loadConfigFromEnvironmentVariables() {
     log("Loading configuration in from environment variables.");
-
     RdKafka::Conf* conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
-
     string errorString = "";
-
     conf->set("bootstrap.servers", getEnvironmentVariable("BOOTSTRAP_SERVERS"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("security.protocol", getEnvironmentVariable("SECURITY_PROTOCOL"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("sasl.mechanisms", getEnvironmentVariable("SASL_MECHANISMS"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("sasl.username", getEnvironmentVariable("SASL_USERNAME"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("debug", getEnvironmentVariable("DEBUG"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("api.version.request", getEnvironmentVariable("API_VERSION_REQUEST"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("api.version.fallback.ms", "0", errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     conf->set("broker.version.fallback", getEnvironmentVariable("BROKER_VERSION_FALLBACK"), errorString);
     printErrorStringIfNotEmpty(&errorString);
-
     return conf;
 }
 
