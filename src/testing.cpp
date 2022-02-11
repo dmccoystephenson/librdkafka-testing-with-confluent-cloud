@@ -98,7 +98,7 @@ int main() {
     log("Producing to topic.");
     string topic = getEnvironmentVariable("TOPIC");
     string message = getEnvironmentVariable("MESSAGE");
-    RdKafka::ErrorCode errorCode = producer->produce(
+    RdKafka::ErrorCode produceErrorCode = producer->produce(
                         /* Topic name */
                         topic,
                         /* Any Partition */
@@ -117,16 +117,24 @@ int main() {
                         NULL);
         
     // error checking
-    if (errorCode != RdKafka::ERR_NO_ERROR) {
-        cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
+    if (produceErrorCode == RdKafka::ERR_NO_ERROR) {
+        cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
     }
     else {
-        cout << "[SUCCESS] " << "Enqueued message (" << message.size() << "bytes) for topic " << topic << endl;
+        cout << "[ERROR]" << "Failed to produce to topic " << topic << "." << endl;
     }
     
     // flush
     log("Flushing...");
-    producer->flush(10*1000);
+    RdKafka::ErrorCode flushErrorCode = producer->flush(10*1000);
+
+    // error checking
+    if (produceErrorCode == RdKafka::ERR_NO_ERROR) {
+        cout << "[SUCCESS] " << "Flushed message(s)." << topic << endl;
+    }
+    else {
+        cout << "[ERROR]" << "Failed to flush message(s)." << endl;
+    }
 
     // delete producer
     log("Deleting producer.");
