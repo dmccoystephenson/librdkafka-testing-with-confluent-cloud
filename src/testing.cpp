@@ -132,7 +132,7 @@ int main() {
 
     // error checking
     if (flushErrorCode == RdKafka::ERR_NO_ERROR) {
-        cout << "[SUCCESS] " << " Flushed message(s)." << topic << endl;
+        cout << "[SUCCESS] " << " Flushed message(s)." << endl;
     }
     else {
         cout << "[ERROR]" << " Failed to flush message(s)." << endl;
