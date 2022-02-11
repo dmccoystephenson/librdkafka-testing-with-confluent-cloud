@@ -126,7 +126,9 @@ int main() {
     
     // flush
     log("Flushing message(s)...");
-    RdKafka::ErrorCode flushErrorCode = producer->flush(10*1000);
+    int seconds = 5;
+    int milliseconds = seconds * 1000;
+    RdKafka::ErrorCode flushErrorCode = producer->flush(milliseconds);
 
     // error checking
     if (flushErrorCode == RdKafka::ERR_NO_ERROR) {
