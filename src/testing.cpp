@@ -125,15 +125,15 @@ int main() {
     }
     
     // flush
-    log("Flushing...");
+    log("Flushing message(s)...");
     RdKafka::ErrorCode flushErrorCode = producer->flush(10*1000);
 
     // error checking
     if (flushErrorCode == RdKafka::ERR_NO_ERROR) {
-        cout << "[SUCCESS] " << "Flushed message(s)." << topic << endl;
+        cout << "[SUCCESS] " << " Flushed message(s)." << topic << endl;
     }
     else {
-        cout << "[ERROR]" << "Failed to flush message(s)." << endl;
+        cout << "[ERROR]" << " Failed to flush message(s)." << endl;
     }
 
     // delete producer
