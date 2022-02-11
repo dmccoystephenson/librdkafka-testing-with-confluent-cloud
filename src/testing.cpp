@@ -129,7 +129,7 @@ int main() {
     RdKafka::ErrorCode flushErrorCode = producer->flush(10*1000);
 
     // error checking
-    if (produceErrorCode == RdKafka::ERR_NO_ERROR) {
+    if (flushErrorCode == RdKafka::ERR_NO_ERROR) {
         cout << "[SUCCESS] " << "Flushed message(s)." << topic << endl;
     }
     else {
